@@ -1,6 +1,6 @@
 ---
 name: python-poetry
-description: Use this skill as the main entry point for Python project work, including creating, updating, running, testing, reviewing, or standardizing Python projects with Poetry, Typer CLI entry points, Chinese README documentation, logging conventions, and VS Code debugging configuration. For Python gRPC/Protobuf work, route to the protos skill. For deep learning training framework work, route to the deep-learning-training-framework skill.
+description: Use this skill as the main entry point for Python project work, including creating, updating, running, testing, reviewing, or standardizing Python projects with Poetry, Typer CLI entry points, Chinese README documentation, logging conventions, and VS Code debugging configuration. For Python gRPC/Protobuf work, route to the protos skill. For deep learning inference work, route to the dl-inference skill. For deep learning training framework work, route to the dl-train skill.
 metadata:
   short-description: Python project conventions with Poetry
 ---
@@ -117,7 +117,8 @@ templates/launch.json
 ## 任务路由
 
 - 任务涉及 `.proto`、gRPC、Protobuf、`grpcio-tools`、`mypy-protobuf`、`*_pb2.py`、`*_pb2_grpc.py`、生成脚本或内置 proto 文件时，使用上级目录中的 `../protos` skill；本 skill 只提供 Poetry 环境和 Python 工程约定。
-- 任务涉及深度学习训练框架、Lightning 风格训练、模型注册、数据管道、typed YAML 配置、checkpoint、resume、export、实验日志或训练测试时，使用上级目录中的 `../dl-train` skill。该仓库和目录名为 `dl-train`，当前 `SKILL.md` 声明的 skill name 是 `deep-learning-training-framework`；本 skill 只提供 Poetry 环境和 Python 工程约定。
+- 任务涉及深度学习推理、模型加载、device/dtype 处理、batch/stream 推理、runtime/runner 抽象、推理 gRPC 服务或推理验证基准时，使用上级目录中的 `../dl-inference` skill；本 skill 只提供 Poetry 环境和 Python 工程约定。
+- 任务涉及深度学习训练框架、Lightning 风格训练、模型注册、数据管道、typed YAML 配置、checkpoint、resume、export、实验日志或训练测试时，使用上级目录中的 `../dl-train` skill；本 skill 只提供 Poetry 环境和 Python 工程约定。
 
 相关 skill 仓库可用当前目录的 `pull_related_skills.sh` 拉取或补齐；默认使用各仓库的 GitHub `origin`。
 
@@ -128,6 +129,7 @@ templates/launch.json
 - 是否理解并遵循了项目内更具体的约定。
 - 是否避免了无关重构和不必要的依赖变更。
 - 是否使用 Poetry 运行安装、脚本、测试或应用启动命令。
+- 深度学习推理相关任务是否联动 `dl-inference`，并保持模型加载、任务推理、runtime/runner 和服务协议边界清晰。
 - CLI 入口是否位于 `<package_name>/commands/app.py`。
 - Typer CLI 是否暴露 `app = typer.Typer()`，命令是否使用 `@app.command()` 注册。
 - CLI 参数是否使用 `typer.Option` 或 `typer.Argument`，需要环境变量配置的参数是否显式设置 `envvar`。

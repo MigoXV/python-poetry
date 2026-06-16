@@ -40,6 +40,7 @@ run() {
 
 run "python-poetry" "https://github.com/MigoXV/python-poetry.git"
 run "protos" "https://github.com/MigoXV/protos.git"
+run "dl-inference" "https://github.com/MigoXV/dl-inference.git"
 run "dl-train" "https://github.com/MigoXV/dl-train.git"
 
 exit "${FAILED}"
