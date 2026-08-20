@@ -132,6 +132,8 @@ venv.bak/
 
 # Node / pnpm
 node_modules/
+src/web/node_modules/
+src/web/dist/
 .pnpm-store/
 .npm/
 pnpm-debug.log*

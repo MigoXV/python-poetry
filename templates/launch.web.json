@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "backend",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "envFile": "${workspaceFolder}/.env",
+      "preLaunchTask": "web: build",
+      "args": [
+        "<package_name>.web.app:app",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8000"
+      ]
+    }
+  ]
+}
