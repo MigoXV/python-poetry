@@ -1,6 +1,6 @@
 ---
 name: python-poetry
-description: Use this skill as the main entry point for Python project work, including creating, updating, running, testing, reviewing, or standardizing Python projects with Poetry, Typer CLI entry points, Chinese README documentation, logging conventions, and VS Code debugging configuration. For Python gRPC/Protobuf work, route to the protos skill. For deep learning inference work, route to the dl-inference skill. For deep learning training framework work, route to the dl-train skill.
+description: Use this skill as the main entry point for Python project work, including creating, updating, running, testing, reviewing, or standardizing Poetry projects, Typer CLIs, FastAPI backends with React/Vite frontends, Chinese README documentation, logging, and VS Code debugging. For Python gRPC/Protobuf work, route to the protos skill. For deep learning inference work, route to the dl-inference skill. For deep learning training framework work, route to the dl-train skill.
 metadata:
   short-description: Python project conventions with Poetry
 ---
@@ -25,8 +25,9 @@ metadata:
 4. CLI 参数必须使用 `typer.Option` 和 `typer.Argument`；适合通过环境变量配置的参数必须显式设置 `envvar`。
 5. 在 `app.py` 中使用 `logging.basicConfig(...)` 配置基础日志；各模块使用模块级 `logger = logging.getLogger(__name__)`。
 6. 新增或更新 `.vscode/launch.json` 时，提供基于 module 的 `<package_name>.commands.app` 调试配置，并确保每个配置都包含 `"envFile": "${workspaceFolder}/.env"`。
-7. 可行时通过 Poetry 运行验证命令，例如 `poetry install`、`poetry run pytest` 或项目对应命令。
-8. 完成前说明修改了哪些文件，以及运行过哪些验证命令；如果无法验证，简要说明原因。
+7. 当 Python 项目作为后端并配套浏览器前端时，先完整阅读 [references/web-backend.md](references/web-backend.md)，再初始化、托管或调试前端。
+8. 可行时通过 Poetry 运行验证命令，例如 `poetry install`、`poetry run pytest` 或项目对应命令。
+9. 完成前说明修改了哪些文件，以及运行过哪些验证命令；如果无法验证，简要说明原因。
 
 ## 项目初始化
 
@@ -38,6 +39,15 @@ metadata:
 - `templates/app.py` -> `src/<package_name>/commands/app.py`
 - `templates/launch.json` -> `.vscode/launch.json`
 - `templates/gitignore` -> `.gitignore`
+
+后端项目需要配套前端时，还要按照 [references/web-backend.md](references/web-backend.md) 使用以下模板：
+
+- `templates/web/` -> `src/web/`
+- `templates/web-app.py` -> `src/<package_name>/web/app.py`
+- `templates/launch.web.json` -> `.vscode/launch.json`
+- `templates/tasks.web.json` -> `.vscode/tasks.json`
+
+如果目标文件已经存在，合并必要配置，不要直接覆盖用户已有内容。
 
 复制模板后，必须替换所有占位符：
 
@@ -114,6 +124,19 @@ templates/launch.json
 
 `"envFile": "${workspaceFolder}/.env"`。
 
+对于配套 `src/web` 前端的后端项目，改用全栈调试模板。仅后端服务 Debug 配置追加 `"preLaunchTask": "web: build"`；CLI、测试等非后端配置不追加前端构建任务。具体合并规则见 [references/web-backend.md](references/web-backend.md)。
+
+## Python 后端与配套前端
+
+当同一项目包含 Python 后端和浏览器前端时，统一使用以下边界：
+
+- 前端根目录固定为 `src/web`，使用 React、TypeScript、Vite 和 pnpm。
+- 前端构建产物固定为 `src/web/dist`，由 Python 后端托管；不要默认把前后端作为两个长期独立服务运行。
+- 新项目后端使用 FastAPI，入口为 `<package_name>.web.app:app`；既有项目保留已有框架和服务入口，只统一构建目录及托管行为。
+- VS Code 启动后端调试前必须执行一次 `web: build`，确保后端托管最新构建产物。
+
+执行这类任务前必须完整阅读 [references/web-backend.md](references/web-backend.md)。
+
 ## 任务路由
 
 - 任务涉及 `.proto`、gRPC、Protobuf、`grpcio-tools`、`mypy-protobuf`、`*_pb2.py`、`*_pb2_grpc.py`、生成脚本或内置 proto 文件时，使用上级目录中的 `../protos` skill；本 skill 只提供 Poetry 环境和 Python 工程约定。
@@ -135,6 +158,10 @@ templates/launch.json
 - CLI 参数是否使用 `typer.Option` 或 `typer.Argument`，需要环境变量配置的参数是否显式设置 `envvar`。
 - `app.py` 是否配置 `logging.basicConfig(...)`，各模块是否使用模块级 logger。
 - `.vscode/launch.json` 中每个调试配置是否包含 `"envFile": "${workspaceFolder}/.env"`。
+- 配套前端是否位于 `src/web`，使用 pnpm，并将构建产物输出到 `src/web/dist`。
+- 后端是否托管 `src/web/dist`，API、OpenAPI 和实际静态文件请求是否不会被 SPA 回退覆盖。
+- 后端 Debug 配置是否使用 `"preLaunchTask": "web: build"`，对应任务是否在 `src/web` 执行 `pnpm run build`。
+- 是否提交 `pnpm-lock.yaml`，并忽略 `src/web/node_modules/` 和 `src/web/dist/`。
 - `README.md` 是否使用中文。
 
 最终回复中说明修改了哪些文件，以及运行过哪些验证命令。如果无法验证，简要说明原因。
