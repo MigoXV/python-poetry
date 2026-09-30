@@ -43,5 +43,6 @@ run "protos" "https://github.com/MigoXV/protos.git"
 run "dl-inference" "https://github.com/MigoXV/dl-inference.git"
 run "dl-train" "https://github.com/MigoXV/dl-train.git"
 run "manas-paper-ui" "https://github.com/MigoXV/manas-paper-ui.git"
+run "abyssus-vallum" "https://github.com/MigoXV/abyssus-vallum.git"
 
 exit "${FAILED}"
